@@ -38,7 +38,7 @@ _
     examples => [
         {
             args => {detail=>1, regex=>'^release'},
-            'x.doc.show_result' => 1,
+            'x.doc.show_result' => 0,
             test => 0,
         },
     ],
