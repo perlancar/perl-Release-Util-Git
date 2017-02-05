@@ -32,8 +32,15 @@ _
             cmdline_aliases => {l=>{}},
         },
     },
+    deps => {
+        prog => 'git',
+    },
     examples => [
-        {args => {detail=>1, regex=>'^release'}},
+        {
+            args => {detail=>1, regex=>'^release'},
+            'x.doc.show_result' => 1,
+            test => 0,
+        },
     ],
 };
 sub list_git_release_tags {
@@ -57,7 +64,7 @@ sub list_git_release_tags {
         },
     }
 
-    $resmeta->{'table.fields'} = [qw/tag date /] if $args{detail};
+    $resmeta->{'table.fields'} = [qw/tag date commit/] if $args{detail};
 
     [200, "OK", \@res, $resmeta];
 }
