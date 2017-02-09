@@ -60,12 +60,13 @@ sub list_git_release_tags {
         push @res, {
             tag => $tag,
             date => $epoch,
+            tz_offset => $offset,
             commit => $commit,
         },
     }
 
     if ($args{detail}) {
-        $resmeta->{'table.fields'} = [qw/tag date commit/];
+        $resmeta->{'table.fields'} = [qw/tag date tz_offset commit/];
     } else {
         @res = map { $_->{tag} } @res;
     }
