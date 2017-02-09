@@ -64,7 +64,11 @@ sub list_git_release_tags {
         },
     }
 
-    $resmeta->{'table.fields'} = [qw/tag date commit/] if $args{detail};
+    if ($args{detail}) {
+        $resmeta->{'table.fields'} = [qw/tag date commit/];
+    } else {
+        @res = map { $_->{tag} } @res;
+    }
 
     [200, "OK", \@res, $resmeta];
 }
