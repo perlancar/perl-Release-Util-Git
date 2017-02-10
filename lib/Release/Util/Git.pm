@@ -44,12 +44,15 @@ _
     ],
 };
 sub list_git_release_tags {
+    require File::Which;
+
     my %args = @_;
 
     # XXX schema
     my $regex = $args{regex} // qr/\A(version|ver|v)?\d/;
 
     -d ".git" or return [412, "No .git subdirectory found"];
+    File::Which::which("git") or return [412, "git is not found in PATH"];
 
     my @res;
     my $resmeta = {};
