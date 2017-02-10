@@ -65,7 +65,7 @@ sub list_git_release_tags {
             date => $epoch,
             tz_offset => $offset,
             commit => $commit,
-        },
+        };
     }
 
     if ($args{detail}) {
@@ -98,15 +98,22 @@ _
 };
 sub list_git_release_years {
     my %args = @_;
-    my $res = list_git_release_years(%args);
+    my $res = list_git_release_tags(%args, detail=>1);
     return $res unless $res->[0] == 200;
 
-    my %tags; # key = year
+    my %tags; # key = year, value = tags
+    for my $e (@{ $res->[2] }) {
+        # XXX use tz_offset? use gmtime?
+        my $year = (localtime $e->{date})[5] + 1900;
+        push @{ $tags{$year} }, $e->{tag};
+    }
+
     my $resmeta = {};
 
     my @res;
     if ($args{detail}) {
-        @res = map { +{year=>$_, tags=>$tags{$_}} } reverse sort keys %tags;
+        @res = map { +{year=>$_, tags=>$tags{$_}} }
+            reverse sort keys %tags;
         $resmeta->{'table.fields'} = [qw/year tags/];
     } else {
         @res = reverse sort keys %tags;
