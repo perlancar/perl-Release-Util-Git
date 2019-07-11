@@ -1,22 +1,22 @@
-0.004   2017-02-10 (PERLANCAR)
+0.004   2017-02-10  Released-By: PERLANCAR
 
         - Use File::Which first to check that the git program exists.
 
         - Add list_git_release_years().
 
 
-0.003   2017-02-09 (PERLANCAR)
+0.003   2017-02-09  Released-By: PERLANCAR
 
 	- Include tz_offset in result.
 
 
-0.002   2017-02-09 (PERLANCAR)
+0.002   2017-02-09  Released-By: PERLANCAR
 
 	- [Bugfix] When detail=0, only return list of tags.
 
 	- Fix Rinci metadata.
 
 
-0.001   2017-02-05 (PERLANCAR)
+0.001   2017-02-05  Released-By: PERLANCAR
 
         - First release.
