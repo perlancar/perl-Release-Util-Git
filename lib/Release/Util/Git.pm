@@ -25,7 +25,7 @@ _
         regex => {
             summary => 'Regex to match a release tag',
             schema => 're*',
-            default => qr/\A(version|ver|v)?\d/,
+            default => qr/\A(?:(?:version|ver|v|release|rel)[_-]?)?\d/,
         },
         detail => {
             schema => ['bool*', is=>1],
