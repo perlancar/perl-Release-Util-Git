@@ -1,3 +1,14 @@
+0.007   2019-10-24  Released-By: PERLANCAR; Urgency: medium
+
+	- [Deprecation] list_git_release_tags(): rename 'regex' argument to
+          'release_tag_regex'. Old argument name still supported for now but
+          deprecated & undocumented and will be removed in the future.
+
+	- list_git_release_tags(): return author_name & author_email
+	  fields, add options author_name_regex & author_email_regex to
+	  filter certain tags only.
+
+
 0.006   2019-10-24  Released-By: PERLANCAR; Urgency: medium
 
 	- [refactor] Refactor release tags pattern to Regexp-Pattern-Git.
