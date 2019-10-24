@@ -1,3 +1,10 @@
+0.006   2019-10-24  Released-By: PERLANCAR; Urgency: medium
+
+	- [refactor] Refactor release tags pattern to Regexp-Pattern-Git.
+
+        - [bugfix] Updated release tags pattern was not used.
+
+
 0.005   2019-10-24  Released-By: PERLANCAR; Urgency: medium
 
 	- [ux] Expand default regex to include e.g. rel-1.23, release1.23,
