@@ -1,3 +1,9 @@
+0.005   2019-10-24  Released-By: PERLANCAR; Urgency: medium
+
+	- [ux] Expand default regex to include e.g. rel-1.23, release1.23,
+	  as well as (version,ver,v)-1.23 (separated by dash/underscore).
+
+
 0.004   2017-02-10  Released-By: PERLANCAR
 
         - Use File::Which first to check that the git program exists.
