@@ -6,6 +6,7 @@ package Release::Util::Git;
 use 5.010001;
 use strict;
 use warnings;
+use Log::ger;
 
 use Regexp::Pattern 'Git::release_tag';
 
@@ -24,10 +25,18 @@ This routine returns a list of them.
 
 _
     args => {
-        regex => {
+        release_tag_regex => {
             summary => 'Regex to match a release tag',
             schema => 're*',
             default => qr/\A$RE{release_tag}/,
+        },
+        author_name_regex => {
+            summary => 'Only consider release commits where author name matches this regex',
+            schema => 're*',
+        },
+        author_email_regex => {
+            summary => 'Only consider release commits where author email matches this regex',
+            schema => 're*',
         },
         detail => {
             schema => ['bool*', is=>1],
@@ -39,7 +48,7 @@ _
     },
     examples => [
         {
-            args => {detail=>1, regex=>'^release'},
+            args => {detail=>1, release_tag_regex=>'^release'},
             'x.doc.show_result' => 0,
             test => 0,
         },
@@ -51,7 +60,9 @@ sub list_git_release_tags {
     my %args = @_;
 
     # XXX schema
-    my $regex = $args{regex} // $RE{release_tag};
+    my $release_tag_regex  = $args{release_tag_regex} // $args{regex} // $RE{release_tag};
+    my $author_name_regex  = $args{author_name_regex};
+    my $author_email_regex = $args{author_email_regex};
 
     -d ".git" or return [412, "No .git subdirectory found"];
     File::Which::which("git") or return [412, "git is not found in PATH"];
@@ -59,19 +70,30 @@ sub list_git_release_tags {
     my @res;
     my $resmeta = {};
 
-    for my $line (`git for-each-ref --format='%(creatordate:raw) %(refname) %(objectname)' refs/tags`) {
-        my ($epoch, $offset, $tag, $commit) = $line =~ m!^(\d+) ([+-]\d+) refs/tags/(.+) (.+)$! or next;
-        $tag =~ $regex or next;
-        push @res, {
+    for my $line (`git for-each-ref --format='%(creatordate:raw)%09%(authorname)%09%(authoremail)%09%(refname)%09%(objectname)' refs/tags`) {
+        my ($epoch, $offset, $author_name, $author_email, $tag, $commit) = $line =~ m!^(\d+) ([+-]\d+)\t(.+?)\t(.+?)\trefs/tags/(.+)\t(.+)$! or next;
+        $tag =~ $release_tag_regex or next;
+        my $rec = {
             tag => $tag,
             date => $epoch,
             tz_offset => $offset,
+            author_name => $author_name,
+            author_email => $author_email,
             commit => $commit,
         };
+        if (defined $author_name_regex && $rec->{author_name} !~ $author_name_regex) {
+            log_debug "Not including release tag $tag because author name ($rec->{author_name}) does not match regex $author_name_regex";
+            next;
+        }
+        if (defined $author_email_regex && $rec->{author_email} !~ $author_email_regex) {
+            log_debug "Not including release tag $tag because author email ($rec->{author_email}) does not match regex $author_email_regex";
+            next;
+        }
+        push @res, $rec;
     }
 
     if ($args{detail}) {
-        $resmeta->{'table.fields'} = [qw/tag date tz_offset commit/];
+        $resmeta->{'table.fields'} = [qw/tag date tz_offset author_name author_email commit/];
     } else {
         @res = map { $_->{tag} } @res;
     }
