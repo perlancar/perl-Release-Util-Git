@@ -7,6 +7,8 @@ use 5.010001;
 use strict;
 use warnings;
 
+use Regexp::Pattern 'Git::release_tag';
+
 our %SPEC;
 
 $SPEC{list_git_release_tags} = {
@@ -25,7 +27,7 @@ _
         regex => {
             summary => 'Regex to match a release tag',
             schema => 're*',
-            default => qr/\A(?:(?:version|ver|v|release|rel)[_-]?)?\d/,
+            default => qr/\A$RE{release_tag}/,
         },
         detail => {
             schema => ['bool*', is=>1],
@@ -49,7 +51,7 @@ sub list_git_release_tags {
     my %args = @_;
 
     # XXX schema
-    my $regex = $args{regex} // qr/\A(version|ver|v)?\d/;
+    my $regex = $args{regex} // $RE{release_tag};
 
     -d ".git" or return [412, "No .git subdirectory found"];
     File::Which::which("git") or return [412, "git is not found in PATH"];
